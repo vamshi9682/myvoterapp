@@ -1,0 +1,16 @@
+{
+  "name": "myvoterapp",
+  "version": "1.0.0",
+  "description": "My node application creating a online voting platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "prepare": "husky install"
+  },
+  "author": "Vamshi Vignesh <bagulavamshivignesh25@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "jest": "^29.3.1"
+  }
+}
