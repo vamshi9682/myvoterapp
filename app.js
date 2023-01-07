@@ -6,4 +6,12 @@ app.get("/", async function (request, response) {
     title: "Todo application",
   });
 });
+app.get("/signup", (request, response) => {
+  response.render("signup", {
+    title: "Signup",
+  });
+});
+app.get("/login", (request, response) => {
+  response.render("login", { title: "login" });
+});
 module.exports = app;
