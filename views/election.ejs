@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <link href="./css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+
+            <div>
+                <div>
+                    <a href="/new" class="underline text-purple-900 text-4xl hover:text-blue-300  text-3xl visited:text-purple-600">Create a New Election</a>
+                    <%- include('elections.ejs', {title: "Elections which are created but not launched" , data:
+                        getElections}) %>
+                        <%- include('elections.ejs', {title: "Elections which are running" , data: ongoingElections })
+                            %>
+                            <%- include('elections.ejs', {title: "Elections which are completed" , data: completedElections}) %>
+                </div>
+            </div>
+            <a href="/signout" class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">Signout</a>
+        </div>
+</body>
+
+</html>

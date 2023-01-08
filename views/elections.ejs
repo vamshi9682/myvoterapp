@@ -5,38 +5,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./css/styles.css" rel="stylesheet">
+    <title>Online Voting Platform</title>
+
     <meta name="csrf-token" content="<%= csrfToken %>" />
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
     <div class="grid grid-cols-6">
-        <div class="col-start-6">
-            <a href="/signout"
-                class="underline text-purple-900 hover:text-blue-300  visited:text-purple-600">Signout</a>
-        </div>
-        <div class="col-start-3 col-span-2">
-            <form action="/elections" method="post">
-                <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
-                <p class="py-2 text-4xl text-blue-700">Create a new election</p>
-                <div class="flex-auto">
-                    <label for="electionname" lass="ml-2 text-sm text-gray-600">Election Name:</label>
-                    <br>
-                    <div class="flex items-center py-2">
-                        <input
-                            class="appearance-none bg-transparent border  border-gray-400  rounded w-full text-gray-700 mr-3 py-4 px-3  leading-tight focus:outline-none"
-                            type="text" placeholder="Election Name" name="electioname" aria-label="Full name">
-                        <div class="flex-auto">
-                            <button type="submit"
-                                class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">Create
-                                Election</button>
-                            <br>
+        <div class="col-start-1 col-span-5">
+            <h5>
+                <%= title %> <span
+                        class="bg-gray-100 text-gray-800 text-sm font-small mr-2 px-2.5 py-0.5 rounded dark:bg-gray-200 dark:text-gray-900 justify-center items-center items">
+                        <%= data.length %>
+                    </span>
+            </h5>
+            <ul class="list-none">
+                <% for(var i=0; i<data.length; i++) {%>
+                    <li class="Todo-Item">
+                        <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
+                            <input id="todo-checkbox-<%= ongoing[i].id %>"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300" type="checkbox">
+                            <label for="todo-checkbox-<%= data[i].id %>"
+                                class="ml-2 text-sm text-gray-600 cursor-pointer">
+                                <%= data[i].name %>
+                            </label>
+                            <a href="#" class="hidden trash-icon ml-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                            </a>
                         </div>
-                    </div>
-
-                </div>
-            </form>
+                    </li>
+                    <% } %>
+            </ul>
         </div>
     </div>
 </body>

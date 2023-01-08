@@ -111,15 +111,38 @@ app.post(
   }
 );
 
-app.get("/elections", async (request, response) => {
-  response.render("elections", { csrfToken: request.csrfToken() });
-});
+app.get(
+  "/elections",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const loggedInUser = request.user.id;
+    const getElections = await elections.getElections(loggedInUser);
+    const ongoingElections = await elections.ongoing(loggedInUser);
+    const completedElections = await elections.completed(loggedInUser);
+
+    if (request.accepts("html")) {
+      response.render("election", {
+        title: "login",
+        getElections,
+        ongoingElections,
+        completedElections,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({
+        newelection: getElections,
+        ongoing,
+        completed,
+      });
+    }
+  }
+);
 
 app.post("/elections", async (request, response) => {
   try {
     const elec = await elections.create({
       name: request.body.electionname,
-      status: true,
+      AdminId: user.request.id,
     });
   } catch (err) {
     console.log(err);
