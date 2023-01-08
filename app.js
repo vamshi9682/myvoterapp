@@ -2,41 +2,40 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
 const app = express();
-const csrf = require("tiny-csrf");
-const cookieParser = require("cookie-parser");
+var csrf = require("tiny-csrf");
+const flash = require("connect-flash");
 const { Admin, elections } = require("./models");
 const bodyParser = require("body-parser");
-const connectEnsureLogin = require("connect-ensure-login");
-const LocalStrategy = require("passport-local").Strategy;
-const path = require("path");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const passport = require("passport");
-const flash = require("connect-flash");
-const saltRounds = 10;
-app.use(bodyParser.json());
-app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(flash());
-app.use(cookieParser("Some secret String"));
-app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+var cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const passport = require("passport");
+const session = require("express-session");
+const connectEnsureLogin = require("connect-ensure-login");
+app.use(cookieParser("ssh! some secret string"));
 app.set("view engine", "ejs");
+const path = require("path");
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+const LocalStrategy = require("passport-local");
+app.use(express.static(path.join(__dirname, "public")));
+app.set("views", path.join(__dirname, "views"));
+app.use(flash());
 app.use(
   session({
-    secret: "my-super-secret-key-2837428907583420",
+    secret: "my-secret-super-key-21728172615261562",
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
-app.use((request, response, next) => {
+app.use(function (request, response, next) {
   response.locals.messages = request.flash();
   next();
 });
 app.use(passport.initialize());
 app.use(passport.session());
-
 passport.use(
   new LocalStrategy(
     {
@@ -45,28 +44,29 @@ passport.use(
     },
     (username, password, done) => {
       Admin.findOne({ where: { email: username } })
-        .then(async function (Admin) {
-          const result = await bcrypt.compare(password, Admin.password);
+        .then(async function (user) {
+          const result = await bcrypt.compare(password, user.password);
           if (result) {
-            return done(null, Admin);
+            return done(null, user);
           } else {
-            return done(null, false);
+            return done(null, false, { message: "Invalid password" });
           }
         })
         .catch((error) => {
-          return done(null, false);
+          return done(null, false, { message: "Invalid Email-Id" });
         });
     }
   )
 );
+
 passport.serializeUser((user, done) => {
-  console.log("Serializing user in session", Admin.id);
-  done(null, Admin.id);
+  console.log("Serializing user in session", user.id);
+  done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
   Admin.findByPk(id)
-    .then((Admin) => {
-      done(null, Admin);
+    .then((user) => {
+      done(null, user);
     })
     .catch((error) => {
       done(error, null);
@@ -98,25 +98,32 @@ app.post(
     failureFlash: true,
   }),
   function (request, response) {
-    console.log(request.Admin);
     response.redirect("/elections");
   }
 );
 
 app.get("/elections", async (request, response) => {
-  console.log("elections are live");
+  response.render("elections");
 });
 
 app.post("/Admin", async (request, response) => {
   try {
+    const hashedpwd = await bcrypt.hash(request.body.password, saltRounds);
     const admin = await Admin.create({
       name: request.body.userName,
       email: request.body.email,
-      password: request.body.password,
+      password: hashedpwd,
     });
-    response.redirect("/elections");
+    request.login(admin, (err) => {
+      if (err) {
+        console.log(err);
+        response.redirect("/login");
+      }
+      response.redirect("/elections");
+    });
   } catch (error) {
     console.log(error);
+    request.flash("error", error.message);
     return response.redirect("/signup");
   }
 });
