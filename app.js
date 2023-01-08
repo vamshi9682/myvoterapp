@@ -103,7 +103,20 @@ app.post(
 );
 
 app.get("/elections", async (request, response) => {
-  response.render("elections");
+  response.render("elections", { csrfToken: request.csrfToken() });
+});
+
+app.post("/elections", async (request, response) => {
+  try {
+    const elec = await elections.create({
+      name: request.body.electionname,
+      status: false,
+    });
+  } catch (err) {
+    console.log(err);
+    request.flash("error", err.message);
+    return response.redirect("/elections");
+  }
 });
 
 app.post("/Admin", async (request, response) => {

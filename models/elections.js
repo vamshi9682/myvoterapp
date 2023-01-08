@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   elections.init(
     {
       name: DataTypes.STRING,
+      status: DataTypes.BOOLEAN,
     },
     {
       sequelize,
