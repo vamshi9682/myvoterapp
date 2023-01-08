@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,35 +7,26 @@
     <link href="./css/styles.css" rel="stylesheet">
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
 <body>
     <div class="grid grid-cols-6">
-        <div class="col-start-6">
-            <a href="/signout"
-                class="underline text-purple-900 hover:text-blue-300  visited:text-purple-600">Signout</a>
-        </div>
         <div class="col-start-3 col-span-2">
-            <form action="/elections" method="post">
+            <h6 class="py-4 text-4xl font-bold">Create New Election</h6>
+            <form action="/newelection" method="post">
                 <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
-                <p class="py-2 text-4xl text-blue-700">Create a new election</p>
-                <div class="flex-auto">
-                    <label for="electionname" lass="ml-2 text-sm text-gray-600">Election Name:</label>
-                    <br>
-                    <div class="flex items-center py-2">
-                        <input
-                            class="appearance-none bg-transparent border  border-gray-400  rounded w-full text-gray-700 mr-3 py-4 px-3  leading-tight focus:outline-none"
-                            type="text" placeholder="Election Name" name="electioname" aria-label="Full name">
-                        <div class="flex-auto">
-                            <button type="submit"
-                                class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">Create
-                                Election</button>
-                            <br>
-                        </div>
-                    </div>
+                <div class="py-3">
+                    <label>Election's name?</label>
+                    <input type="text" name="electionname" class="border border-gray-600 text-black-300 rounded p-2 w-full">
                 </div>
+                <div class="py-3">
+                    <button type="submit"
+                        class="text-white bg-gray-600    hover:bg-purple-800 font-medium rounded px-5 py-2">Submit</button>
                 </div>
             </form>
         </div>
     </div>
 </body>
+
+</html>

@@ -116,13 +116,15 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const loggedInUser = request.user.id;
+    const loggedInUserName = request.user.usernameField;
     const getElections = await elections.getElections(loggedInUser);
     const ongoingElections = await elections.ongoing(loggedInUser);
     const completedElections = await elections.completed(loggedInUser);
 
     if (request.accepts("html")) {
       response.render("election", {
-        title: "login",
+        title: "Welcome",
+        loggedInUser,
         getElections,
         ongoingElections,
         completedElections,
@@ -138,16 +140,21 @@ app.get(
   }
 );
 
-app.post("/elections", async (request, response) => {
+app.get("/newelection", function (req, res) {
+  res.render("electionnew", { csrfToken: req.csrfToken() });
+});
+
+app.post("/newelection", async (request, response) => {
   try {
     const elec = await elections.create({
       name: request.body.electionname,
-      AdminId: user.request.id,
+      AdminId: request.user.id,
     });
+    console.log(request.user.id);
+    return response.redirect("/elections");
   } catch (err) {
     console.log(err);
     request.flash("error", err.message);
-    return response.redirect("/elections");
   }
 });
 

@@ -13,10 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "AdminId",
       });
     }
-    static async addelection({ title, AdminId }) {
+    static async createelection({ title, AdminId }) {
       return this.create({
         title: title,
-        status: false,
         launched: false,
         AdminId: AdminId,
       });
@@ -45,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll({
         where: {
           end: true,
+          launched: false,
           AdminId: id,
         },
       });
