@@ -91,6 +91,15 @@ app.get("/login", (request, response) => {
   response.render("login", { title: "login", csrfToken: request.csrfToken() });
 });
 
+app.get("/signout", (request, response, next) => {
+  request.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    response.redirect("/");
+  });
+});
+
 app.post(
   "/session",
   passport.authenticate("local", {
@@ -110,7 +119,7 @@ app.post("/elections", async (request, response) => {
   try {
     const elec = await elections.create({
       name: request.body.electionname,
-      status: false,
+      status: true,
     });
   } catch (err) {
     console.log(err);
