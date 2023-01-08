@@ -158,6 +158,10 @@ app.post("/elections/new", async (request, response) => {
   }
 });
 
+app.get("/elections/:id", async (req, res) => {
+  const elec = elections.findByPk(user.params.id);
+});
+
 app.post("/Admin", async (request, response) => {
   try {
     const hashedpwd = await bcrypt.hash(request.body.password, saltRounds);
