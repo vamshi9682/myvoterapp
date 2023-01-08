@@ -2,30 +2,38 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
 const app = express();
-app.use(express.json({ extended: true }));
+const csrf = require("tiny-csrf");
+const cookieParser = require("cookie-parser");
+const { Admin, elections } = require("./models");
 const bodyParser = require("body-parser");
-
+const connectEnsureLogin = require("connect-ensure-login");
+const LocalStrategy = require("passport-local").Strategy;
 const path = require("path");
-const passport = require("passport");
-const connectEnsureLogin = require("path");
+const bcrypt = require("bcrypt");
 const session = require("express-session");
-const LocalStrategy = require("passport-local");
-
+const passport = require("passport");
+const flash = require("connect-flash");
+const saltRounds = 10;
 app.use(bodyParser.json());
-app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
-
-app.use(express.static(path.join(__dirname, "public")));
-
+app.use(flash());
+app.use(cookieParser("Some secret String"));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+app.set("view engine", "ejs");
 app.use(
   session({
-    secret: "my-super-secret-key-21728172615261562",
+    secret: "my-super-secret-key-2837428907583420",
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, //24hrs
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
-
+app.use((request, response, next) => {
+  response.locals.messages = request.flash();
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -37,10 +45,10 @@ passport.use(
     },
     (username, password, done) => {
       Admin.findOne({ where: { email: username } })
-        .then(async function (user) {
-          const result = await bcrypt.compare(password, admin.password);
+        .then(async function (Admin) {
+          const result = await bcrypt.compare(password, Admin.password);
           if (result) {
-            return done(null, admin);
+            return done(null, Admin);
           } else {
             return done(null, false);
           }
@@ -52,56 +60,51 @@ passport.use(
   )
 );
 passport.serializeUser((user, done) => {
-  console.log("Serializing user in session", admin.id);
-  done(null, admin.id);
+  console.log("Serializing user in session", Admin.id);
+  done(null, Admin.id);
 });
 passport.deserializeUser((id, done) => {
   Admin.findByPk(id)
-    .then((user) => {
-      done(null, user);
+    .then((Admin) => {
+      done(null, Admin);
     })
     .catch((error) => {
       done(error, null);
     });
 });
 
-const { Admin, elections } = require("./models");
-
 app.get("/", async function (request, response) {
   response.render("index", {
     title: "Todo application",
+    csrfToken: request.csrfToken(),
   });
 });
 
 app.get("/signup", (request, response) => {
   response.render("signup", {
     title: "Signup",
+    csrfToken: request.csrfToken(),
   });
 });
 
 app.get("/login", (request, response) => {
-  response.render("login", { title: "login" });
+  response.render("login", { title: "login", csrfToken: request.csrfToken() });
 });
 
 app.post(
   "/session",
   passport.authenticate("local", {
     failureRedirect: "/login",
+    failureFlash: true,
   }),
   function (request, response) {
-    console.log(request.admin);
+    console.log(request.Admin);
     response.redirect("/elections");
   }
 );
 
-app.post("/elections", async (request, response) => {
-  try {
-    const name = await elections.create({
-      name: request.body.userName,
-    });
-  } catch (err) {
-    console.log(err);
-  }
+app.get("/elections", async (request, response) => {
+  console.log("elections are live");
 });
 
 app.post("/Admin", async (request, response) => {
