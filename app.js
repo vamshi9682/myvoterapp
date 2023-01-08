@@ -140,11 +140,11 @@ app.get(
   }
 );
 
-app.get("/newelection", function (req, res) {
+app.get("/elections/new", function (req, res) {
   res.render("electionnew", { csrfToken: req.csrfToken() });
 });
 
-app.post("/newelection", async (request, response) => {
+app.post("/elections/new", async (request, response) => {
   try {
     const elec = await elections.create({
       name: request.body.electionname,
