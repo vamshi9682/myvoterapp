@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
 const flash = require("connect-flash");
-const { Admin, elections } = require("./models");
+const { Admin, elections, questions } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
@@ -132,7 +132,7 @@ app.get(
       });
     } else {
       response.json({
-        newelection: getElections,
+        getElections,
         ongoing,
         completed,
       });
@@ -158,8 +158,18 @@ app.post("/elections/new", async (request, response) => {
   }
 });
 
-app.get("/elections/:id", async (req, res) => {
-  const elec = elections.findByPk(user.params.id);
+app.get("/elections/:ElectionId", async function (request, response) {
+  try {
+    const ques = await questions.FindAllQuestions();
+    console.log(ques);
+    return response.render("electionpreview", {
+      ques,
+      csrfToken: request.csrfToken(),
+    });
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
 });
 
 app.post("/Admin", async (request, response) => {

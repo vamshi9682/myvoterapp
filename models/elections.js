@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "AdminId",
       });
     }
+
+    static async FindElection(id) {
+      return this.findByPk(id);
+    }
+
     static async createelection({ title, AdminId }) {
       return this.create({
         title: title,
@@ -56,11 +61,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-    setLaunchedStatus(completed) {
+    setLaunchStatus(completed) {
       return this.update({ launched: completed });
     }
     setCompletionStatus(completed) {
-      return this.update({ status: completed });
+      return this.update({ end: completed });
     }
   }
   elections.init(
