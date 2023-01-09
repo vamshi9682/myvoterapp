@@ -139,59 +139,75 @@ app.get(
     }
   }
 );
-app.delete("/elections/:ElectionId", async (request, response) => {
-  const aid = request.user.id;
-  const eid = request.params.ElectionId;
-  try {
-    await elections.deleteelec(eid, aid);
-    return response.json(true);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-app.get("/elections/new", async (request, response) => {
-  response.render("electionnew", { csrfToken: request.csrfToken() });
-});
-
-app.post("/elections/new", async (request, response) => {
-  try {
-    const elec = await elections.create({
-      name: request.body.electionname,
-      AdminId: request.user.id,
-    });
-    console.log(request.user.id);
-    return response.redirect("/elections");
-  } catch (err) {
-    console.log(err);
-    request.flash("error", err.message);
-  }
-});
-
-app.get("/elections/:ElectionId/questions", async (request, response) => {
-  try {
+app.delete(
+  "/elections/:ElectionId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const aid = request.user.id;
     const eid = request.params.ElectionId;
-    const ques = questions.findAll();
-    console.log(ques);
-    return response.render("electionpreview", {
-      eid,
-      ques,
-      csrfToken: request.csrfToken(),
-    });
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
+    try {
+      await elections.deleteelec(eid, aid);
+      return response.json(true);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
   }
-});
+);
+app.get(
+  "/elections/new",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    response.render("electionnew", { csrfToken: request.csrfToken() });
+  }
+);
+
+app.post(
+  "/elections/new",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const elec = await elections.create({
+        name: request.body.electionname,
+        AdminId: request.user.id,
+      });
+      console.log(request.user.id);
+      return response.redirect("/elections");
+    } catch (err) {
+      console.log(err);
+      request.flash("error", err.message);
+    }
+  }
+);
+
+app.get(
+  "/elections/:ElectionId/questions",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const eid = request.params.ElectionId;
+      const ques = await questions.findAll();
+      console.log(ques);
+      return response.render("electionpreview", {
+        eid,
+        ques,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
 
 app.post(
   "/elections/:ElectionId/questions/new",
+  connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    const eid = request.params.ElectionId;
     try {
-      const ques = await questions.create({
+      await questions.create({
         question: request.body.name,
-        desription: request.body.descripton,
+        desription: request.body.description,
       });
       return response.redirect("/elections/:ElectionId/questions");
     } catch (error) {
@@ -203,6 +219,7 @@ app.post(
 
 app.get(
   "/elections/:ElectionId/questions/new",
+  connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     const eid = request.params.ElectionId;
     response.render("createquestion", { eid, csrfToken: request.csrfToken() });

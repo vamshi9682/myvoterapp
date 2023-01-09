@@ -10,7 +10,7 @@
             <% for(var i=0; i<ques.length; i++) {%>
                 <li class="Todo-Item">
                     <div class="flex items-center w-fit h-9 my-2 px-2 py-1 rounded hover:bg-purple-50">
-                        <label for="todo-checkbox-<%= questions[i].id %>"
+                        <label for="todo-checkbox-<%= ques[i].id %>"
                             class="ml-2 text-sm text-gray-600 cursor-pointer">
                             <%= ques[i].question %>
                         </label>
@@ -31,7 +31,7 @@
                             </a>
                         </div>
                         <div class="flex-auto">
-                            <a href="/elections/<%= ques[i].id%>" class="  w-4 h-4  ml-2">
+                            <a href="#" class="  w-4 h-4  ml-2">
                                 <button class="text-white bg-black  font-medium rounded px-5 py-2" >View</button>
                             </a>
                         </div>
