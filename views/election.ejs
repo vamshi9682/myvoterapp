@@ -37,7 +37,7 @@
 
             <div>
                 <div>
-                    <p class="py-2 text-4xl text-blue-700"><%= title %> <%= loggedInUser %></p>
+                    <p class="py-2 text-4xl text-blue-700"><%= title %> <%= loggedInUserName.username %></p>
                     <a href="/elections/new" class="underline text-purple-900 text-2xl hover:text-blue-300  text-3xl visited:text-purple-600">Create a New Election</a>
                     <%- include('elections.ejs', { title: "Elections which are created but not launched" , data: getElections}) %>
                         <%- include('elections.ejs', {title: "Elections which are running" , data: ongoingElections }) %>

@@ -116,7 +116,7 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const loggedInUser = request.user.id;
-    const loggedInUserName = request.user.usernameField;
+    const loggedInUserName = Admin.findByPk(loggedInUser);
     const getElections = await elections.getElections(loggedInUser);
     const ongoingElections = await elections.ongoing(loggedInUser);
     const completedElections = await elections.completed(loggedInUser);
@@ -125,6 +125,7 @@ app.get(
       response.render("election", {
         title: "Welcome",
         loggedInUser,
+        loggedInUserName,
         getElections,
         ongoingElections,
         completedElections,
