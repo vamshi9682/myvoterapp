@@ -11,6 +11,24 @@
     <title>
         <%= title %>
     </title>
+    <script>
+         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        function deleteelec(id) {
+          console.log(id);
+          fetch(`/elections/${id}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+          "_csrf": token
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+    </script>
 </head>
 
 <body>

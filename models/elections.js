@@ -54,18 +54,20 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-    static async deleteelec(eid) {
-      return this.destroy({
-        where: {
-          id: eid,
-        },
-      });
-    }
+
     setLaunchStatus(completed) {
       return this.update({ launched: completed });
     }
     setCompletionStatus(completed) {
       return this.update({ end: completed });
+    }
+    static async deleteelec(eid, aid) {
+      return this.destroy({
+        where: {
+          id: eid,
+          AdminId: aid,
+        },
+      });
     }
   }
   elections.init(

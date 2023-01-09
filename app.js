@@ -139,9 +139,19 @@ app.get(
     }
   }
 );
-
-app.get("/elections/new", function (req, res) {
-  res.render("electionnew", { csrfToken: req.csrfToken() });
+app.delete("/elections/:ElectionId", async (request, response) => {
+  const aid = request.user.id;
+  const eid = request.params.ElectionId;
+  try {
+    await elections.deleteelec(eid, aid);
+    return response.json(true);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+app.get("/elections/new", async (request, response) => {
+  response.render("electionnew", { csrfToken: request.csrfToken() });
 });
 
 app.post("/elections/new", async (request, response) => {
@@ -158,11 +168,13 @@ app.post("/elections/new", async (request, response) => {
   }
 });
 
-app.get("/elections/:ElectionId", async function (request, response) {
+app.get("/elections/:ElectionId/questions", async (request, response) => {
   try {
-    const ques = await questions.FindAllQuestions();
+    const eid = request.params.ElectionId;
+    const ques = questions.findAll();
     console.log(ques);
     return response.render("electionpreview", {
+      eid,
       ques,
       csrfToken: request.csrfToken(),
     });
@@ -171,6 +183,31 @@ app.get("/elections/:ElectionId", async function (request, response) {
     return response.status(422).json(error);
   }
 });
+
+app.post(
+  "/elections/:ElectionId/questions/new",
+  async function (request, response) {
+    const eid = request.params.ElectionId;
+    try {
+      const ques = await questions.create({
+        question: request.body.name,
+        desription: request.body.descripton,
+      });
+      return response.redirect("/elections/:ElectionId/questions");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
+  "/elections/:ElectionId/questions/new",
+  async function (request, response) {
+    const eid = request.params.ElectionId;
+    response.render("createquestion", { eid, csrfToken: request.csrfToken() });
+  }
+);
 
 app.post("/Admin", async (request, response) => {
   try {

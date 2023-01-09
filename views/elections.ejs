@@ -37,7 +37,7 @@
                             </svg>
                             </a>
                             <div class="flex-auto">
-                                <a href="#" class="hidden px-2 py-1 trash-icon ml-2">
+                                <a href="#" onclick="deleteelec(<%= data[i].id %>)" class="hidden px-2 py-1 trash-icon ml-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -46,7 +46,7 @@
                                 </a>
                             </div>
                             <div class="flex-auto">
-                                <a href="/elections/<%= data[i].id%>" class="  w-4 h-4  ml-2">
+                                <a href="/elections/<%= data[i].id %>/questions" class="  w-4 h-4  ml-2">
                                     <button class="text-white bg-black  font-medium rounded px-5 py-2" >View</button>
                                 </a>
                             </div>
