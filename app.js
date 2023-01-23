@@ -19,6 +19,7 @@ app.set("view engine", "ejs");
 const path = require("path");
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 const LocalStrategy = require("passport-local");
+const Tokens = require("csrf");
 app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.use(flash());
@@ -146,8 +147,8 @@ app.delete(
   async (request, response) => {
     const aid = request.user.id;
     const eid = request.params.ElectionId;
+
     try {
-      options;
       questions.destroy({
         where: {
           ElectionId: eid,
@@ -285,6 +286,22 @@ app.delete(
           QuestionId: qid,
         },
       });
+      return response.json(true);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/elections/:ElectionId/questions/:QuestionId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    try {
+      var qid = request.params.QuestionId;
+      options.Deleteoptions(qid);
+      questions.deleteques(qid);
       return response.json(true);
     } catch (error) {
       console.log(error);

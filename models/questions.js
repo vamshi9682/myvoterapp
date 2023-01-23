@@ -16,11 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "QuestionId",
       });
     }
-    static async deleteques(eid, aid) {
+    static async deleteques(qid) {
       return this.destroy({
         where: {
-          id: eid,
-          AdminId: aid,
+          id: qid,
         },
       });
     }
