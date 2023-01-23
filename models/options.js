@@ -1,7 +1,7 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, where } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class questions extends Model {
+  class options extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,31 +9,34 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      questions.belongsTo(models.elections, {
-        foreignKey: "ElectionId",
-      });
-      questions.hasMany(models.options, {
+      options.belongsTo(models.questions, {
         foreignKey: "QuestionId",
       });
     }
-    static async deleteques(eid, aid) {
+
+    static async FindOptionsTOQuestions(qid) {
+      return this.findAll({
+        where: {
+          QuestionId: qid,
+        },
+      });
+    }
+    static async Deleteoptions(qid) {
       return this.destroy({
         where: {
-          id: eid,
-          AdminId: aid,
+          QuestionId: qid,
         },
       });
     }
   }
-  questions.init(
+  options.init(
     {
-      question: DataTypes.STRING,
-      desription: DataTypes.STRING,
+      optionname: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "questions",
+      modelName: "options",
     }
   );
-  return questions;
+  return options;
 };

@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
 const flash = require("connect-flash");
-const { Admin, elections, questions } = require("./models");
+const { Admin, elections, questions, options } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
@@ -147,6 +147,12 @@ app.delete(
     const aid = request.user.id;
     const eid = request.params.ElectionId;
     try {
+      options;
+      questions.destroy({
+        where: {
+          ElectionId: eid,
+        },
+      });
       await elections.deleteelec(eid, aid);
       return response.json(true);
     } catch (error) {
@@ -186,11 +192,14 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     try {
-      const eid = request.params.ElectionId;
-      const ques = await questions.findAll();
-      console.log(ques);
+      var elecid = request.params.ElectionId;
+      const ques = await questions.findAll({
+        where: {
+          ElectionId: elecid,
+        },
+      });
       return response.render("electionpreview", {
-        eid,
+        elecid,
         ques,
         csrfToken: request.csrfToken(),
       });
@@ -204,13 +213,38 @@ app.get(
 app.post(
   "/elections/:ElectionId/questions/new",
   connectEnsureLogin.ensureLoggedIn(),
-  async function (request, response) {
+  async (request, response) => {
     try {
+      var eid = request.params.ElectionId;
       await questions.create({
         question: request.body.name,
         desription: request.body.description,
+        ElectionId: eid,
       });
-      return response.redirect("/elections/:ElectionId/questions");
+      console.log(eid);
+      return response.redirect("/elections/" + eid + "/questions");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.post(
+  "/elections/:ElectionId/questions/:QuestionId/options",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      var eid = request.params.ElectionId;
+      var qid = request.params.QuestionId;
+      await options.create({
+        optionname: request.body.optionname,
+        QuestionId: qid,
+      });
+      console.log(eid);
+      return response.redirect(
+        "/elections/" + eid + "/questions/" + qid + "/options"
+      );
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -219,10 +253,29 @@ app.post(
 );
 
 app.get(
+  "/elections/:ElectionId/questions/:QuestionId/options",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    var eid = request.params.ElectionId;
+    var qid = request.params.QuestionId;
+    var ques = await questions.findByPk(qid);
+    const option = await options.FindOptionsTOQuestions(qid);
+    console.log(option);
+    return response.render("creatingoptions", {
+      qid,
+      ques,
+      eid,
+      option,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.get(
   "/elections/:ElectionId/questions/new",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    const eid = request.params.ElectionId;
+    var eid = await request.params.ElectionId;
     response.render("createquestion", { eid, csrfToken: request.csrfToken() });
   }
 );

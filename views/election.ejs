@@ -12,8 +12,8 @@
         <%= title %>
     </title>
     <script>
-         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         function deleteelec(id) {
+          var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
           console.log(id);
           fetch(`/elections/${id}`, {
             method: 'delete',

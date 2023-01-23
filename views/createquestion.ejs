@@ -13,7 +13,7 @@
    <div class="w-full">
      <h2 class="text-center text-blue-400 font-bold text-2xl uppercase mb-10">Create questions here</h2>
      <div class="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
-       <form action="/elections/:ElectionId/questions/new" method="post">
+       <form action="/elections/<%= eid %>/questions/new" method="post">
         <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
          <div class="mb-5">
            <label for="name" class="block mb-2 font-bold text-gray-600">Question Name</label>
