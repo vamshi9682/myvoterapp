@@ -147,14 +147,8 @@ app.delete(
   async (request, response) => {
     const aid = request.user.id;
     const eid = request.params.ElectionId;
-
     try {
-      questions.destroy({
-        where: {
-          ElectionId: eid,
-        },
-      });
-      await elections.deleteelec(eid, aid);
+      elections.deleteelec(eid, aid);
       return response.json(true);
     } catch (error) {
       console.log(error);
@@ -300,7 +294,6 @@ app.delete(
   async function (request, response) {
     try {
       var qid = request.params.QuestionId;
-      options.Deleteoptions(qid);
       questions.deleteques(qid);
       return response.json(true);
     } catch (error) {
