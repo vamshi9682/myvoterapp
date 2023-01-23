@@ -271,6 +271,28 @@ app.get(
   }
 );
 
+app.delete(
+  "/elections/:ElectionId/questions/:QuestionId/options/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      var oid = request.params.id;
+      var eid = request.params.ElectionId;
+      var qid = request.params.QuestionId;
+      await options.destroy({
+        where: {
+          id: oid,
+          QuestionId: qid,
+        },
+      });
+      return response.json(true);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
 app.get(
   "/elections/:ElectionId/questions/new",
   connectEnsureLogin.ensureLoggedIn(),

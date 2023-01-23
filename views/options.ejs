@@ -17,13 +17,14 @@
     </h5>
     <ul class="list-none">
         <% for(var i=0; i<data.length; i++) {%>
+            <form  method="delete" action="elections/<%= eid %>/questions/<%= qid  %>/options/<%= data[i].id %>" %></form>
             <li class="Todo-Item">
                 <div class="flex items-center w-fit h-9 my-2 px-2 py-1 rounded hover:bg-purple-50">
                     <label for="todo-checkbox-<%= data[i].id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
                         <%= data[i].optionname %>
                     </label>
                     <div class="flex-auto">
-                        <a href="#" onclick="deleteoption(<%= eid %>,<%= qid %>,<%= data[i].id %>)" class="w-4 h-4  ml-2">
+                        <a href="#" onclick="deleteoption(<%= eid %>,<%= ques.id %>,<%= data[i].id %>)" class="w-4 h-4  ml-2">
                             <button class="text-white bg-black  font-medium rounded px-5 py-2">Delete Option</button>
                         </a>
                         <a href="#" class="w-4 h-4  ml-2">
@@ -32,6 +33,7 @@
                     </div>
                 </div>
             </li>
+        </form>
         <% } %>
     </ul>
 </body>

@@ -5,7 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./css/styles.css" rel="stylesheet">
     <meta name="csrf-token" content="<%= csrfToken %>" />
-    <script src="https://cdn.tailwindcss.com"></script> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function deleteoption(ElectionId,QuestionId,id) {
+          var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+          console.log(id);
+          fetch(`/elections/${ElectionId}/questions/${QuestionId}/options/${id}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+          "_csrf": token
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+    </script>
 </head>
 <body>
     <div class="grid grid-cols-6">
