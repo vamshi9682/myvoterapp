@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "ElectionId",
         onDelete: "cascade",
       });
+      elections.hasMany(models.voter, {
+        foreignKey: "ElectionId",
+        onDelete: "cascade",
+      });
     }
 
     static async FindElection(id) {

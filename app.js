@@ -205,6 +205,43 @@ app.get(
   }
 );
 
+app.get(
+  "/elections/:ElectionId/voters",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      var elecid = request.params.ElectionId;
+      return response.render("voter", {
+        elecid,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.post(
+  "/elections/:ElectionId/voters",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      var eid = request.params.ElectionId;
+      await questions.create({
+        question: request.body.name,
+        desription: request.body.description,
+        ElectionId: eid,
+      });
+      console.log(eid);
+      return response.redirect("/elections/" + eid + "/questions");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
 app.post(
   "/elections/:ElectionId/questions/new",
   connectEnsureLogin.ensureLoggedIn(),
@@ -307,7 +344,7 @@ app.get(
   "/elections/:ElectionId/questions/new",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    var eid = await request.params.ElectionId;
+    var eid = request.params.ElectionId;
     response.render("createquestion", { eid, csrfToken: request.csrfToken() });
   }
 );
