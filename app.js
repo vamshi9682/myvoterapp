@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
 const flash = require("connect-flash");
-const { Admin, elections, questions, options } = require("./models");
+const { Admin, elections, questions, options, voter } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
@@ -211,8 +211,15 @@ app.get(
   async (request, response) => {
     try {
       var elecid = request.params.ElectionId;
+      const vo = await voter.findAll({
+        where: {
+          ElectionId: elecid,
+        },
+      });
+      console.log(elecid, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
       return response.render("voter", {
         elecid,
+        vo,
         csrfToken: request.csrfToken(),
       });
     } catch (error) {
@@ -228,13 +235,13 @@ app.post(
   async (request, response) => {
     try {
       var eid = request.params.ElectionId;
-      await questions.create({
-        question: request.body.name,
-        desription: request.body.description,
+      await voter.create({
+        VoterId: request.body.voterid,
+        password: request.body.password,
         ElectionId: eid,
       });
       console.log(eid);
-      return response.redirect("/elections/" + eid + "/questions");
+      return response.redirect("/elections/" + eid + "/voters");
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);

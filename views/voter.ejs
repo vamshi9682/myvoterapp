@@ -14,7 +14,7 @@
     <h2 class="text-center text-blue-400 font-bold text-2xl uppercase mb-10">We can Manage Voters here</h2>
     <div class="bg-gray-200 grid grid-cols-6 items-center">
         <div class="w-25 col-start-2 col-span-5">
-            <form action="/elections/<%= elecid %>/voter" method="post">
+            <form action="/elections/<%= elecid %>/voters" method="post">
                 <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
                 <label for="voterid" class="mb-2 p-3 font-bold text-gray-600">VoterID</label>
                 <input type="text" id="voterid" name="voterid" placeholder="Enter your Voter ID"
@@ -23,8 +23,37 @@
                 <input type="password" id="password" name="password" placeholder="Voter Password"
                     class="border border-red-300  p-3 w-25 rounded">
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="w-25 bg-black items-center text-white font-bold p-4 rounded-lg">Add Voter</button>
+                <button type="submit" class="w-25 bg-black items-center text-white font-bold p-4 rounded-lg">Add
+                    Voter</button>
             </form>
         </div>
     </div>
+    <br>
+    <div class="bg-gray-200 grid grid-cols-6 items-center">
+        <div class="w-25 col-start-3 col-span-5">
+            <h5 class="text-gray-800 text-3xl">
+                We can Manage Voter Here <span
+                    class="bg-gray-100 text-gray-800 text-sm font-small mr-2 px-2.5 py-0.5 rounded dark:bg-gray-200 dark:text-gray-900 justify-center items-center items">
+                    <%= vo.length %>
+                </span>
+            </h5>
+            <ul class="list-none">
+                <% for(var i=0; i<vo.length; i++) {%>
+                    <li class="Todo-Item">
+                        <div class="flex items-center w-fit h-9 my-2 px-2 py-1 rounded hover:bg-purple-50">
+                            <label for="voter-<%= vo[i].id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                                <%= vo[i].VoterId %>
+                            </label>
+                            <div class="flex-auto">
+                                <a href="" class="w-4 h-4  ml-2">
+                                    <button class="text-white bg-black  font-medium rounded px-5 py-2">Delete
+                                        Voter</button>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <% } %>
+        </div>
+    </div>
+    </ul>
 </body>
