@@ -248,6 +248,26 @@ app.post(
     }
   }
 );
+app.delete(
+  "/elections/:ElectionId/voters/:VoterId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    try {
+      var eid = request.params.ElectionId;
+      var vid = request.params.VoterId;
+      await voter.destroy({
+        where: {
+          id: vid,
+          ElectionId: eid,
+        },
+      });
+      return response.json(true);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
 
 app.post(
   "/elections/:ElectionId/questions/new",

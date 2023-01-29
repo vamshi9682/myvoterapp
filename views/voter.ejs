@@ -8,6 +8,22 @@
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <link href="./css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function deletevoter(ElectionId, VoterId) {
+            var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            fetch(`/elections/${ElectionId}/voters/${VoterId}`, {
+                method: 'delete',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    "_csrf": token
+                })
+            }).then((res) => {
+                if (res.ok) {
+                    window.location.reload();
+                }
+            }).catch(err => console.error(err))
+        }
+    </script>
 </head>
 
 <body>
@@ -45,7 +61,7 @@
                                 <%= vo[i].VoterId %>
                             </label>
                             <div class="flex-auto">
-                                <a href="" class="w-4 h-4  ml-2">
+                                <a href="" onclick="deletevoter(<%= vo[i].ElectionId %>,<%= vo[i].id %>)" class="w-4 h-4  ml-2">
                                     <button class="text-white bg-black  font-medium rounded px-5 py-2">Delete
                                         Voter</button>
                                 </a>
