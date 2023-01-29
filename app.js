@@ -269,6 +269,41 @@ app.delete(
   }
 );
 
+app.put(
+  "/elections/:ElectionId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const elec = await elections.findByPk(request.params.ElectionId);
+    try {
+      const updateelec = await elec.setLaunchStatusTrue();
+      console.log(updateelec);
+      return response.redirect("/elections/" + updateelec.id + "/vote");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get("/elections/:ElectionId/vote", async (request, response) => {
+  try {
+    var eid = request.params.ElectionId;
+    const voterques = await questions.findAll({
+      where: {
+        ElectionId: eid,
+      },
+    });
+    return response.render("votingpage", {
+      voterques,
+      eid,
+      csrfToken: request.csrfToken(),
+    });
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
 app.post(
   "/elections/:ElectionId/questions/new",
   connectEnsureLogin.ensureLoggedIn(),

@@ -40,11 +40,11 @@
                                 <a href="/elections/<%= data[i].id %>/questions" class="  w-3 h-3  ml-2">
                                     <button class="text-white bg-black  font-medium rounded px-5 py-2" >Manage Questions</button>
                                 </a>
-                                <a href="/elections/<%= data[i].id %>/voters" class="w-3 h-  ml-2">
+                                <a href="/elections/<%= data[i].id %>/voters" class="w-3 h-3  ml-2">
                                     <button class="text-white bg-black  font-medium rounded px-5 py-2" >Manage Voters</button>
                                 </a>
-                                <a href="#" class="  w-4 h-4  ml-2">
-                                    <button class="text-white bg-black  font-medium rounded px-5 py-2" >Launch</button>
+                                <a href="/elections/<%= data[i].id %>/vote"  class="  w-4 h-4  ml-2">
+                                    <button onclick="updateelec(<%= data[i].id %>)" class="text-white bg-black  font-medium rounded px-5 py-2" >Launch</button>
                                 </a>
                             </div>           
                         </div>

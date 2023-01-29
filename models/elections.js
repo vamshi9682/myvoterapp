@@ -63,8 +63,8 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    setLaunchStatus(completed) {
-      return this.update({ launched: completed });
+    setLaunchStatusTrue() {
+      return this.update({ launched: true });
     }
     setCompletionStatus(completed) {
       return this.update({ end: completed });
