@@ -24,6 +24,13 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+    static async FindQues(eid) {
+      return this.findAll({
+        where: {
+          ElectionId: eid,
+        },
+      });
+    }
   }
   questions.init(
     {

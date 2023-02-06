@@ -288,14 +288,37 @@ app.put(
 app.get("/elections/:ElectionId/vote", async (request, response) => {
   try {
     var eid = request.params.ElectionId;
-    const voterques = await questions.findAll({
-      where: {
-        ElectionId: eid,
-      },
-    });
+    var voterques = await questions.FindQues(eid);
+    console.log(voterques);
     return response.render("votingpage", {
       voterques,
       eid,
+      csrfToken: request.csrfToken(),
+    });
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.get("/elections/:ElectionId/live", async (request, response) => {
+  try {
+    var eid = request.params.ElectionId;
+    var voterques = await questions.FindQues(eid);
+    const quesoption = [];
+    for (i = 0; i < voterques.length; i++) {
+      const quesoptions = await options.findAll({
+        where: {
+          QuestionId: voterques[i].id,
+        },
+      });
+      quesoption.push(quesoptions);
+      console.log(quesoptions);
+    }
+    return response.render("electionslive", {
+      voterques,
+      eid,
+      quesoption,
       csrfToken: request.csrfToken(),
     });
   } catch (error) {

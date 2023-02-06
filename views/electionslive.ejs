@@ -1,0 +1,43 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./css/styles.css" rel="stylesheet">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head><body>
+    <div class="grid grid-cols-7">
+        <div class="col-start-3 col-span-5">
+            <h5 class="text-gray-800 text-4xl">
+                Registered Voters can vote here <span
+                    class="bg-gray-100 text-gray-800 text-sm font-small mr-2 px-2.5 py-0.5 rounded dark:bg-gray-200 dark:text-gray-900 justify-center items-center items">
+                    <%= voterques.length %>
+                </span>
+            </h5>
+            <ul class="list-none">
+                <% for(var i=0; i<voterques.length; i++) {%>
+                    <li class="Todo-Item">
+                        <div class="flex items-center w-fit h-9 my-2 px-2 py-1 rounded hover:bg-purple-50">
+                            <label for="todo-checkbox-<%= voterques[i].id %>"
+                                class="ml-2 text-2xl text-gray-600 cursor-pointer">
+                                <%= voterques[i].question %>
+                            </label>
+                        </div>
+                        <li>
+                        <% for(var j=0; j<quesoption[i].length; j++) {%>
+                        <div class="flex items-center w-fit h-9 my-2 px-2 py-1 rounded hover:bg-purple-50">
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input id="question-option<%= quesoption[i][j].id %>" type="radio" value="quesoption[i][j].optionname" name="question-option<%= voterques[i].id %>" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="question-option<%= quesoption[i][j].id %>"
+                                class="ml-2 text-1xl text-gray-600 cursor-pointer">
+                                <%= quesoption[i][j].optionname %>
+                            </label>
+                        </div>
+                        </li>
+                    <% } %>
+
+                    </li>
+                    <% } %>
+            </ul>
+        </div>
+    </div>
+</body>
