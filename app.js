@@ -211,17 +211,21 @@ app.get(
   async (request, response) => {
     try {
       var elecid = request.params.ElectionId;
-      const vo = await voter.findAll({
-        where: {
-          ElectionId: elecid,
-        },
-      });
-      console.log(elecid, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-      return response.render("voter", {
-        elecid,
-        vo,
-        csrfToken: request.csrfToken(),
-      });
+      if (election.launched == false) {
+        const vo = await voter.findAll({
+          where: {
+            ElectionId: elecid,
+          },
+        });
+        console.log(elecid, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        return response.render("voter", {
+          elecid,
+          vo,
+          csrfToken: request.csrfToken(),
+        });
+      } else {
+        return response.redirect("/elections");
+      }
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -333,13 +337,18 @@ app.post(
   async (request, response) => {
     try {
       var eid = request.params.ElectionId;
-      await questions.create({
-        question: request.body.name,
-        desription: request.body.description,
-        ElectionId: eid,
-      });
-      console.log(eid);
-      return response.redirect("/elections/" + eid + "/questions");
+      const election = elections.findByPk(eid);
+      if (election.launched == false) {
+        await questions.create({
+          question: request.body.name,
+          desription: request.body.description,
+          ElectionId: eid,
+        });
+        console.log(eid);
+        return response.redirect("/elections/" + eid + "/questions");
+      } else {
+        return response.redirect("/elections");
+      }
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
